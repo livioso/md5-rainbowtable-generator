@@ -1,6 +1,6 @@
 ### MD5 Rainbow Table Generator
 
-A very simple rainbow table generator for password up to 7 characters.
+A very simple rainbow table generator.
 
 #### What is a Rainbow Table?
 
