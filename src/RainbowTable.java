@@ -1,9 +1,13 @@
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RainbowTable {
 
     private Map<String, RainbowTableEntry> passwordToHash = new HashMap<>();
+    MessageDigest md5;
 
     private Character[] characters = {
             '0', '1', '2', '3', '4',
@@ -13,43 +17,50 @@ public class RainbowTable {
             'k', 'l', 'm', 'n', 'o',
             'p', 'q', 'r', 's', 't',
             'u', 'v', 'w', 'x', 'y',
-            'z' // refactor me :-(
+            'z' // refactor me :(
     };
 
     public RainbowTable() {
+        // ['0' -'9'] and ['a' - 'z]
         assert (characters.length == 36);
+
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         buildRainbowTable();
     }
 
     private void buildRainbowTable() {
         for (int i = 0; i <= 2000; i++) {
-            System.out.println(i + ": " + numberToString(i));
+            final String password = convertToString(i);
+            passwordToHash.put(password, buildRainbowTableEntry(password));
         }
     }
 
-    public String numberToString(int n) {
+    public String convertToString(int fromInt) {
 
         String result = "0000000";
-        // special case for 0 as we would
-        // struggle to handle it properly
-        // in the loop below
-        if (n == 0) return result;
+        if (fromInt == 0) return result;
 
         String converted = "";
-        for (int i = n; i >= 1; i = i / characters.length) {
+        for (int i = fromInt; i >= 1; i = i / characters.length) {
             converted = characters[i % characters.length] + converted;
         }
 
+        // return a string that is 7 characters long with
+        // trailing '0' in front (e.g. 0000000abc => 0000abc)
         result += converted;
-        // the interesting part is
-        // in the last 7 characters
         return result.substring(
                 result.length() - 7,
                 result.length());
     }
 
-    private RainbowTableEntry buildRainbowTableEntry(String fromHash) {
+    public RainbowTableEntry buildRainbowTableEntry(String fromPassword) {
 
+        String md5Hash = generateMD5Hash(fromPassword);
 
         String reducedHashStart = "";
         String reducedHashEnd = "";
@@ -60,8 +71,22 @@ public class RainbowTable {
         return entry;
     }
 
-    public String resolveFromMD5Hash(String md5hash) {
-        return "";
+    public String generateMD5Hash(String fromPlainText) {
+
+        String md5Hash = "";
+
+
+            //md5.reset();
+            md5.update(fromPlainText.getBytes());
+
+            BigInteger md5HashBigInt = new BigInteger(1, md5.digest());
+            return md5HashBigInt.toString(16);
+
+    }
+
+    public String reduceFromMD5Hash(String md5hash) {
+
+        return "0000000";
     }
 
     private class RainbowTableEntry {
