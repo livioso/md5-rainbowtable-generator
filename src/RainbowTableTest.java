@@ -21,6 +21,7 @@ public class RainbowTableTest {
     public void testReductionFunctionLevel0() {
 
         final int level = 0;
+
         BigInteger hash = cut.generateMD5Hash("0000000");
         String reducedHash = cut.reduceFromMD5Hash(hash, level);
 
@@ -32,11 +33,18 @@ public class RainbowTableTest {
     public void testReductionFunctionLevel1() {
 
         final int level = 1;
+
         BigInteger hash = cut.generateMD5Hash("87inwgn");
         String reducedHash = cut.reduceFromMD5Hash(hash, level);
 
         assertEquals(7, reducedHash.length());
         assertEquals("frrkiis", reducedHash);
+    }
+
+    @Test
+    public void testLastReducedHash() {
+        assertEquals("87inwgn", cut.generateLastReducedHash("0000000", 0));
+        assertEquals("dues6fg", cut.generateLastReducedHash("0000000", 2));
     }
 
     @Test
