@@ -7,7 +7,6 @@ import java.util.Map;
 public class RainbowTable {
 
     private Map<String, RainbowTableEntry> passwordToHash = new HashMap<>();
-    MessageDigest md5;
 
     private Character[] characters = {
             '0', '1', '2', '3', '4',
@@ -23,12 +22,6 @@ public class RainbowTable {
     public RainbowTable() {
         // ['0' -'9'] and ['a' - 'z]
         assert (characters.length == 36);
-
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
 
         buildRainbowTable();
     }
@@ -75,13 +68,17 @@ public class RainbowTable {
 
         String md5Hash = "";
 
-
-            //md5.reset();
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
             md5.update(fromPlainText.getBytes());
 
             BigInteger md5HashBigInt = new BigInteger(1, md5.digest());
-            return md5HashBigInt.toString(16);
+            md5Hash = md5HashBigInt.toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
+        return md5Hash;
     }
 
     public String reduceFromMD5Hash(String md5hash) {
