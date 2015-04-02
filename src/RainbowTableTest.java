@@ -1,25 +1,10 @@
 import org.junit.Test;
-
+import java.math.BigInteger;
 import static org.junit.Assert.*;
 
 public class RainbowTableTest {
 
     private RainbowTable cut = new RainbowTable();
-
-    @org.junit.Before
-    public void setUp() throws Exception {
-
-    }
-
-    @org.junit.After
-    public void tearDown() throws Exception {
-
-    }
-
-    @org.junit.Test
-    public void testResolveFromMD5Hash() throws Exception {
-
-    }
 
     @Test
     public void testConversationFunction() {
@@ -33,31 +18,42 @@ public class RainbowTableTest {
     }
 
     @Test
-    public void testReductionFunction() {
+    public void testReductionFunctionLevel0() {
 
-        String reducedHash = cut.reduceFromMD5Hash(
-                cut.generateMD5Hash("0000000"));
+        final int level = 0;
+        BigInteger hash = cut.generateMD5Hash("0000000");
+        String reducedHash = cut.reduceFromMD5Hash(hash, level);
 
         assertEquals(7, reducedHash.length());
         assertEquals("87inwgn", reducedHash);
+    }
 
+    @Test
+    public void testReductionFunctionLevel1() {
+
+        final int level = 1;
+        BigInteger hash = cut.generateMD5Hash("87inwgn");
+        String reducedHash = cut.reduceFromMD5Hash(hash, level);
+
+        assertEquals(7, reducedHash.length());
+        assertEquals("frrkiis", reducedHash);
     }
 
     @Test
     public void testMD5HashGenerator() {
 
         assertEquals("29c3eea3f305d6b823f562ac4be35217",
-                cut.generateMD5Hash("0000000"));
+                cut.generateMD5Hash("0000000").toString(16));
 
         assertEquals("12e2feb5a0feccf82a8d4172a3bd51c3",
-                cut.generateMD5Hash("87inwgn"));
+                cut.generateMD5Hash("87inwgn").toString(16));
     }
 
     @Test
     public void testMD5HashCrackBruteForce() {
 
         assertEquals("1d56a37fb6b08aa709fe90e12ca59e12",
-                cut.generateMD5Hash("0bgec3d"));
+                cut.generateMD5Hash("0bgec3d").toString(16));
 
         //for (int i = 0; i < 2147483647; i++) {
         //    String hash = cut.generateMD5Hash(cut.convertToString(i));

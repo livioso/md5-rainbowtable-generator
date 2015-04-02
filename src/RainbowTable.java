@@ -43,17 +43,12 @@ public class RainbowTable {
             converted = characters[i % characters.length] + converted;
         }
 
-        // return a string that is 7 characters long with
-        // trailing '0' in front (e.g. 0000000abc => 0000abc)
-        result += converted;
-        return result.substring(
-                result.length() - 7,
-                result.length());
+        return addTrailingZeros(converted);
     }
 
     public RainbowTableEntry buildRainbowTableEntry(String fromPassword) {
 
-        String md5Hash = generateMD5Hash(fromPassword);
+        BigInteger md5Hash = generateMD5Hash(fromPassword);
 
         String reducedHashStart = "";
         String reducedHashEnd = "";
@@ -64,16 +59,16 @@ public class RainbowTable {
         return entry;
     }
 
-    public String generateMD5Hash(String fromPlainText) {
+    public BigInteger generateMD5Hash(String fromPlainText) {
 
-        String md5Hash = "";
+        BigInteger md5Hash = BigInteger.valueOf(0);
 
         try {
+
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             md5.update(fromPlainText.getBytes());
+            md5Hash = new BigInteger(1, md5.digest());
 
-            BigInteger md5HashBigInt = new BigInteger(1, md5.digest());
-            md5Hash = md5HashBigInt.toString(16);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -81,10 +76,42 @@ public class RainbowTable {
         return md5Hash;
     }
 
-    public String reduceFromMD5Hash(String md5hash) {
+    public String reduceFromMD5Hash(BigInteger hash, int level) {
 
-        return "0000000";
+        String result = "0000000";
+
+        final BigInteger z = BigInteger.valueOf(characters.length);
+
+        // in order to prevent collisions each level
+        // has a slightly different reduction function
+        hash = hash.add(BigInteger.valueOf(level));
+
+        String reduced = "";
+        for (int i = 0; i < 7; i++) {
+
+            BigInteger[] divAndMod = hash.divideAndRemainder(z);
+            BigInteger remainder = divAndMod[1];
+
+            reduced = characters[remainder.intValue()] + reduced;
+
+            // next hash is the divider
+            hash = divAndMod[0];
+        }
+
+        return addTrailingZeros(reduced);
     }
+
+    // return a string that is 7 characters long with
+    // trailing '0' in front (e.g. 0000000abc => 0000abc)
+    private String addTrailingZeros(String prependTo) {
+        String result = "0000000";
+
+        result += prependTo;
+        result = result.substring(result.length() - 7, result.length());
+
+        return result ;
+    }
+
 
     private class RainbowTableEntry {
 
