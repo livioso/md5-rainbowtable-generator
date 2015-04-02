@@ -79,7 +79,7 @@ public class RainbowTableTest {
 
         // given the hash find the password which
         // should have been generated at cycle 2.
-        String shouldBePassword = cut.searchRainbotable(rt,
+        String shouldBePassword = cut.searchRainbowtable(rt,
                 "12e2feb5a0feccf82a8d4172a3bd51c3", 200);
 
         assertEquals("It should find the password for this hash.",

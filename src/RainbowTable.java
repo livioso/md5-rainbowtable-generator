@@ -22,7 +22,6 @@ public class RainbowTable {
     final int passwordLength = 7;
 
     public RainbowTable() {
-
         // ['0' -'9'] and ['a' - 'z]
         assert (characters.length == 36);
         //buildRainbowTable();
@@ -72,7 +71,6 @@ public class RainbowTable {
     public String reduceFromMD5Hash(BigInteger hash, int level) {
 
         final BigInteger z = BigInteger.valueOf(characters.length);
-
         // in order to prevent collisions each level
         // has a slightly different reduction function result
         hash = hash.add(BigInteger.valueOf(level));
@@ -107,7 +105,7 @@ public class RainbowTable {
         return passwordToLastReduced;
     }
 
-    public String searchRainbotable(
+    public String searchRainbowtable(
             Map<String, String> rainbowTable, String hash, int amountOfCycles)
     {
         // very first look up
