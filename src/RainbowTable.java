@@ -6,9 +6,6 @@ import java.util.Map;
 
 public class RainbowTable {
 
-    // maps the password to the last reduced hash of the hash-reduce chain.
-    private Map<String, String> passwordToLastReduced = new HashMap<>();
-
     // the password is a seven digit string formed by this characters.
     final private Character[] characters = {
             '0', '1', '2', '3', '4',
@@ -21,22 +18,14 @@ public class RainbowTable {
             'z' // refactor me :(
     };
 
-    // how many characters the password / reduced hash has.
-    final int amountOfCharacters = 7;
+    // how many characters the password has.
+    final int passwordLength = 7;
 
     public RainbowTable() {
+
         // ['0' -'9'] and ['a' - 'z]
         assert (characters.length == 36);
         //buildRainbowTable();
-    }
-
-    private void buildRainbowTable() {
-
-        for (int i = 0; i <= 2000; i++) {
-            final String password = convertToString(i);
-            final String reducedHash = generateLastReducedHash(password, 2000);
-            passwordToLastReduced.put(password, reducedHash);
-        }
     }
 
     public String convertToString(int fromInt) {
@@ -53,7 +42,7 @@ public class RainbowTable {
         return addTrailingZeros(converted);
     }
 
-    public BigInteger generateMD5Hash(String fromPlainText) {
+    public BigInteger generateHash(String fromPlainText) {
 
         BigInteger md5Hash = BigInteger.valueOf(0);
 
@@ -73,7 +62,7 @@ public class RainbowTable {
 
         String lastReducedHash = password;
         for(int cycle = 0; cycle <= amountOfCycles; cycle++) {
-            BigInteger hash = generateMD5Hash(lastReducedHash);
+            BigInteger hash = generateHash(lastReducedHash);
             lastReducedHash = reduceFromMD5Hash(hash, cycle);
         }
 
@@ -89,7 +78,7 @@ public class RainbowTable {
         hash = hash.add(BigInteger.valueOf(level));
 
         String reduced = "";
-        for (int i = 0; i < amountOfCharacters; i++) {
+        for (int i = 0; i < passwordLength; i++) {
 
             BigInteger[] divAndMod = hash.divideAndRemainder(z);
             BigInteger remainder = divAndMod[1];
@@ -101,6 +90,40 @@ public class RainbowTable {
         return addTrailingZeros(reduced);
     }
 
+    public Map<String, String> generateRainbowTable(
+            int amoutOfPasswords, int amountOfCycles)
+    {
+
+        Map<String, String> passwordToLastReduced = new HashMap<>();
+
+        for (int i = 0; i <= amoutOfPasswords; i++) {
+            final String password = convertToString(i);
+            final String reducedHash =
+                    generateLastReducedHash(password, amountOfCycles);
+
+            passwordToLastReduced.put(reducedHash, password);
+        }
+
+        return passwordToLastReduced;
+    }
+
+    public String searchRainbotable(
+            Map<String, String> rainbowTable, String hash, int amountOfCycles)
+    {
+        // very first look up
+        String possibleMatch = generateLastReducedHash(hash, amountOfCycles);
+        
+        if(rainbowTable.containsKey(possibleMatch)) {
+            return rainbowTable.get(possibleMatch);
+        }
+
+        for (int i = amountOfCycles; i >= 0; i--) {
+            possibleMatch = generateLastReducedHash(hash, i);
+        }
+
+        return ""; // no match
+    }
+
     // return a string that is 7 characters long with
     // trailing '0' in front (e.g. 0000000abc => 0000abc)
     private String addTrailingZeros(String prependTo) {
@@ -108,10 +131,10 @@ public class RainbowTable {
         String result = "0000000";
         result += prependTo;
         result = result.substring(
-                result.length() - amountOfCharacters, result.length());
+                result.length() - passwordLength, result.length());
 
         // make sure we did it right!
-        assert(result.length() == amountOfCharacters);
+        assert(result.length() == passwordLength);
         return result ;
     }
 }
