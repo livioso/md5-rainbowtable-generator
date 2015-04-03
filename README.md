@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/livioso/md5-rainbowtable-generator.svg?branch=master)](https://travis-ci.org/livioso/md5-rainbowtable-generator)
+
 ### MD5 Rainbow Table Generator
 
 A very simple rainbow table generator.
