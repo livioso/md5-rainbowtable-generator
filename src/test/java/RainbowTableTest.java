@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RainbowTableTest {
 
-    // Class Under Test
+    // class under test
     private RainbowTable cut = new RainbowTable();
 
     @Test
