@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/livioso/md5-rainbowtable-generator.svg?branch=master)](https://travis-ci.org/livioso/md5-rainbowtable-generator)
+[![Build Status](https://travis-ci.org/livioso/md5-rainbowtable-generator.svg?branch=master)](https://travis-ci.org/livioso/md5-rainbowtable-generator) 
+[![Coverage Status](https://coveralls.io/repos/livioso/md5-rainbowtable-generator/badge.svg?branch=master)](https://coveralls.io/r/livioso/md5-rainbowtable-generator?branch=master)
 
 ### MD5 Rainbow Table Generator
 
