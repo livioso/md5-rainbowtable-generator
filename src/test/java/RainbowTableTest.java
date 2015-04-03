@@ -67,11 +67,29 @@ public class RainbowTableTest {
     @Test
     public void testGenerateRainbowTable() {
         Map<String, String> rt = cut.generateRainbowTable(1, 2);
+        assertEquals("It should only have one password in the map.",
+                1, rt.size());
+
         assertEquals("It should be like this after 2 cycles.",
                 "0000000", rt.get("dues6fg"));
     }
 
-    //@Test
+    @Test
+    public void testFindInRainbowTableFirstMatches() {
+        Map<String, String> rt = cut.generateRainbowTable(1, 0);
+        assertEquals("It should be like this after 0 cycles.",
+                "0000000", rt.get("87inwgn"));
+
+        // given the hash find the password which
+        // should have been generated at cycle 2.
+        String shouldBePassword = cut.searchRainbowtable(
+                rt, "29c3eea3f305d6b823f562ac4be35217", 0);
+
+        assertEquals("It should find the password for this hash.",
+                "0000000", shouldBePassword);
+    }
+
+    @Test
     public void testFindInRainbowTable() {
         Map<String, String> rt = cut.generateRainbowTable(1, 200);
         assertEquals("It should be like this after 200 cycles.",

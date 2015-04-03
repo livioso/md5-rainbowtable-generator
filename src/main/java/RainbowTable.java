@@ -24,7 +24,6 @@ public class RainbowTable {
     public RainbowTable() {
         // ['0' -'9'] and ['a' - 'z]
         assert (characters.length == 36);
-        //buildRainbowTable();
     }
 
     public String convertToString(int fromInt) {
@@ -94,7 +93,7 @@ public class RainbowTable {
 
         Map<String, String> passwordToLastReduced = new HashMap<>();
 
-        for (int i = 0; i <= amoutOfPasswords; i++) {
+        for (int i = 0; i < amoutOfPasswords; i++) {
             final String password = convertToString(i);
             final String reducedHash =
                     generateLastReducedHash(password, amountOfCycles);
@@ -109,14 +108,15 @@ public class RainbowTable {
             Map<String, String> rainbowTable, String hash, int amountOfCycles)
     {
         // very first look up
-        String possibleMatch = generateLastReducedHash(hash, amountOfCycles);
+        String possibleMatch = reduceFromMD5Hash(
+                new BigInteger(hash, 16), amountOfCycles);
         
         if(rainbowTable.containsKey(possibleMatch)) {
             return rainbowTable.get(possibleMatch);
         }
 
         for (int i = amountOfCycles; i >= 0; i--) {
-            possibleMatch = generateLastReducedHash(hash, i);
+            possibleMatch = reduceFromMD5Hash(hash, i);
         }
 
         return ""; // no match
