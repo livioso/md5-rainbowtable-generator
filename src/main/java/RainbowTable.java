@@ -116,7 +116,7 @@ public class RainbowTable {
         }
 
         for (int i = amountOfCycles; i >= 0; i--) {
-            possibleMatch = reduceFromMD5Hash(hash, i);
+            possibleMatch = reduceFromMD5Hash(new BigInteger(hash, 16), i);
         }
 
         return ""; // no match
