@@ -1,4 +1,5 @@
 import org.junit.Test;
+
 import java.math.BigInteger;
 import java.util.Map;
 
@@ -48,11 +49,11 @@ public class RainbowTableTest {
     public void testLastReducedHash() {
         cut = new RainbowTable(0);
         assertEquals("It should generate this reduced hash after 0 cycles.",
-                "87inwgn", cut.generateLastReducedHash("0000000"));
+                "87inwgn", cut.generateRainbowTableEntryValue("0000000"));
 
         cut = new RainbowTable(2);
         assertEquals("It should generate this reduced hash after 2 cycles.",
-                "dues6fg", cut.generateLastReducedHash("0000000"));
+                "dues6fg", cut.generateRainbowTableEntryValue("0000000"));
     }
 
     @Test
@@ -117,7 +118,7 @@ public class RainbowTableTest {
                 "12e2feb5a0feccf82a8d4172a3bd51c3");
 
         assertEquals("It should find the password for this hash.",
-               "87inwgn", shouldBePassword);
+                "87inwgn", shouldBePassword);
     }
 
     @Test

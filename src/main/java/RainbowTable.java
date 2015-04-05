@@ -54,10 +54,10 @@ public class RainbowTable {
         return md5Hash;
     }
 
-    public String generateLastReducedHash(String password) {
+    public String generateRainbowTableEntryValue(String forPassword) {
 
-        String lastReducedHash = password;
-        for(int cycle = 0; cycle <= rounds; cycle++) {
+        String lastReducedHash = forPassword;
+        for (int cycle = 0; cycle <= rounds; cycle++) {
             BigInteger hash = generateMD5Hash(lastReducedHash);
             lastReducedHash = reduceFromMD5Hash(hash, cycle);
         }
@@ -68,12 +68,11 @@ public class RainbowTable {
     public String searchChainForHash(String startValue, String lookedForHash) {
 
         String lastReducedHash = startValue;
-
-        for(int cycle = 0; cycle <= rounds; cycle++) {
+        for (int cycle = 0; cycle <= rounds; cycle++) {
             BigInteger hash = generateMD5Hash(lastReducedHash);
 
-            if(hash.equals(new BigInteger(lookedForHash, 16))) {
-                 break; // we found it! -> lastReducedHash
+            if (hash.equals(new BigInteger(lookedForHash, 16))) {
+                break; // we found it! -> lastReducedHash
             } else {
                 lastReducedHash = reduceFromMD5Hash(hash, cycle);
             }
@@ -103,15 +102,14 @@ public class RainbowTable {
     }
 
     public Map<String, String> generateRainbowTable(
-            int amoutOfPasswords)
-    {
+            int amoutOfPasswords) {
 
         Map<String, String> rainbowTable = new HashMap<>();
 
         for (int i = 0; i < amoutOfPasswords; i++) {
             final String password = convertToString(i);
             final String reducedHash =
-                    generateLastReducedHash(password);
+                    generateRainbowTableEntryValue(password);
 
             rainbowTable.put(reducedHash, password);
         }
@@ -120,17 +118,16 @@ public class RainbowTable {
     }
 
     public String searchRainbowTable(
-            Map<String, String> rainbowTable, String lookedForHash)
-    {
+            Map<String, String> rainbowTable, String lookedForHash) {
         BigInteger hash = new BigInteger(lookedForHash, 16);
         String reducedHash = reduceFromMD5Hash(hash, 0);
 
         // very first look up -> just last reduce function applied
-        if(rainbowTable.containsKey(reducedHash)) {
+        if (rainbowTable.containsKey(reducedHash)) {
             return searchChainForHash(
                     rainbowTable.get(reducedHash), lookedForHash);
         }
-        
+
         // Example with 2 rounds:
         // Reduce(2) -> Compare
         // Reduce(1) -> Hash -> Reduce(2) -> Compare
@@ -149,7 +146,7 @@ public class RainbowTable {
             reducedHash = reduceFromMD5Hash(hash, rounds);
             // see if we got a match -> if so reconstruct the
             // chain beginning from the start value (pair->value)
-            if(rainbowTable.containsKey(reducedHash)) {
+            if (rainbowTable.containsKey(reducedHash)) {
                 return searchChainForHash(
                         rainbowTable.get(reducedHash), lookedForHash);
             }
@@ -168,7 +165,7 @@ public class RainbowTable {
                 result.length() - passwordLength, result.length());
 
         // make sure we did it right!
-        assert(result.length() == passwordLength);
-        return result ;
+        assert (result.length() == passwordLength);
+        return result;
     }
 }
