@@ -62,7 +62,6 @@ public class RainbowTable {
         for(int cycle = 0; cycle <= amountOfCycles; cycle++) {
             BigInteger hash = generateHash(lastReducedHash);
             lastReducedHash = reduceFromMD5Hash(hash, cycle);
-            System.out.println(lastReducedHash + ", " +cycle);
         }
 
         return lastReducedHash;
@@ -114,11 +113,22 @@ public class RainbowTable {
 
 
         BigInteger hash = new BigInteger(lookedForHash, 16);
-        String reducedHash = "";
+        String reducedHash = reduceFromMD5Hash(hash, 0);
+        if(rainbowTable.containsKey(reducedHash)) {
 
-        //if(rainbowTable.containsKey(reducedHash)) {
-        //    return "MATCH_FOUND";
-        //}
+            String starting = rainbowTable.get(reducedHash);
+
+            String lastReducedHash = starting;
+            for(int cycle = 0; cycle <= cycles; cycle++) {
+                hash = generateHash(lastReducedHash);
+
+                if(hash.equals(new BigInteger(lookedForHash, 16))) {
+                    return lastReducedHash;
+                }
+
+                lastReducedHash = reduceFromMD5Hash(hash, cycle);
+            }
+        }
         
         // Example with 2 cycles / rounds:
         // Reduce(2) -> Compare
@@ -126,6 +136,7 @@ public class RainbowTable {
         // Reduce(0) -> Hash -> Reduce(1) -> Hash -> Reduce(2) -> Compare
         for (int rCycle = cycles; rCycle > 0; rCycle--) {
 
+            // start over; no match found
             hash = new BigInteger(lookedForHash, 16);
 
             for (int fCycle = cycles-rCycle; fCycle >= 0; fCycle--) {
@@ -133,17 +144,29 @@ public class RainbowTable {
                 reducedHash = reduceFromMD5Hash(hash, cycles - fCycle-1);
                 hash = generateHash(reducedHash);
 
-                System.out.print("Reduce(" + reducedHash + ", " + ((cycles-fCycle-1)) + ") -> Hash -> ");
+                //System.out.print("Reduce(" + reducedHash + ", " + ((cycles-fCycle-1)) + ") -> Hash -> ");
 
                 //System.out.print("Reduce(" + ((cycles-fCycle-1)) + ") -> Hash -> ");
             }
 
             reducedHash = reduceFromMD5Hash(hash, cycles);
-            System.out.print("Reduce(" + (reducedHash + ", " + cycles) + ") -> Compare \n");
+            //System.out.print("Reduce(" + (reducedHash + ", " + cycles) + ") -> Compare \n");
 
 
             if(rainbowTable.containsKey(reducedHash)) {
-                return "MATCH_FOUND";
+
+                String starting = rainbowTable.get(reducedHash);
+
+                String lastReducedHash = starting;
+                for(int cycle = 0; cycle <= cycles; cycle++) {
+                    hash = generateHash(lastReducedHash);
+
+                    if(hash.equals(new BigInteger(lookedForHash, 16))) {
+                        return lastReducedHash;
+                    }
+
+                    lastReducedHash = reduceFromMD5Hash(hash, cycle);
+                }
             }
         }
 
