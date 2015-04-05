@@ -62,6 +62,7 @@ public class RainbowTable {
         for(int cycle = 0; cycle <= amountOfCycles; cycle++) {
             BigInteger hash = generateHash(lastReducedHash);
             lastReducedHash = reduceFromMD5Hash(hash, cycle);
+            System.out.println(lastReducedHash + ", " +cycle);
         }
 
         return lastReducedHash;
@@ -105,21 +106,48 @@ public class RainbowTable {
     }
 
     public String searchRainbowtable(
-            Map<String, String> rainbowTable, String hash, int amountOfCycles)
+            Map<String, String> rainbowTable, String lookedForHash, int amountOfCycles)
     {
-        // very first look up
-        String possibleMatch = reduceFromMD5Hash(
-                new BigInteger(hash, 16), amountOfCycles);
+        final int cycles = amountOfCycles;
+
+
+
+
+        BigInteger hash = new BigInteger(lookedForHash, 16);
+        String reducedHash = "";
+
+        //if(rainbowTable.containsKey(reducedHash)) {
+        //    return "MATCH_FOUND";
+        //}
         
-        if(rainbowTable.containsKey(possibleMatch)) {
-            return rainbowTable.get(possibleMatch);
+        // Example with 2 cycles / rounds:
+        // Reduce(2) -> Compare
+        // Reduce(1) -> Hash -> Reduce(2) -> Compare
+        // Reduce(0) -> Hash -> Reduce(1) -> Hash -> Reduce(2) -> Compare
+        for (int rCycle = cycles; rCycle > 0; rCycle--) {
+
+            hash = new BigInteger(lookedForHash, 16);
+
+            for (int fCycle = cycles-rCycle; fCycle >= 0; fCycle--) {
+
+                reducedHash = reduceFromMD5Hash(hash, cycles - fCycle-1);
+                hash = generateHash(reducedHash);
+
+                System.out.print("Reduce(" + reducedHash + ", " + ((cycles-fCycle-1)) + ") -> Hash -> ");
+
+                //System.out.print("Reduce(" + ((cycles-fCycle-1)) + ") -> Hash -> ");
+            }
+
+            reducedHash = reduceFromMD5Hash(hash, cycles);
+            System.out.print("Reduce(" + (reducedHash + ", " + cycles) + ") -> Compare \n");
+
+
+            if(rainbowTable.containsKey(reducedHash)) {
+                return "MATCH_FOUND";
+            }
         }
 
-        for (int i = amountOfCycles; i >= 0; i--) {
-            possibleMatch = reduceFromMD5Hash(new BigInteger(hash, 16), i);
-        }
-
-        return ""; // no match
+        return "HASH_NOT_FOUND"; // no match
     }
 
     // return a string that is 7 characters long with

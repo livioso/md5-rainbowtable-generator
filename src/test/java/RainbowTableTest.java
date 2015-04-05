@@ -91,17 +91,15 @@ public class RainbowTableTest {
 
     @Test
     public void testFindInRainbowTable() {
-        Map<String, String> rt = cut.generateRainbowTable(1, 200);
-        assertEquals("It should be like this after 200 cycles.",
-                "0000000", rt.get("x8ibux9"));
+        Map<String, String> rt = cut.generateRainbowTable(1, 3);
 
         // given the hash find the password which
         // should have been generated at cycle 2.
         String shouldBePassword = cut.searchRainbowtable(rt,
-                "12e2feb5a0feccf82a8d4172a3bd51c3", 200);
+                "12e2feb5a0feccf82a8d4172a3bd51c3", 3);
 
         assertEquals("It should find the password for this hash.",
-                "87inwgn", shouldBePassword);
+               "87inwgn", shouldBePassword);
     }
 
     @Test
