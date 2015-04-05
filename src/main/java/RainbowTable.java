@@ -125,8 +125,6 @@ public class RainbowTable {
                 if(hash.equals(new BigInteger(lookedForHash, 16))) {
                     return lastReducedHash;
                 }
-
-                lastReducedHash = reduceFromMD5Hash(hash, cycle);
             }
         }
         

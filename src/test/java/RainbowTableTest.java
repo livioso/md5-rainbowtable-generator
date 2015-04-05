@@ -75,6 +75,17 @@ public class RainbowTableTest {
     }
 
     @Test
+    public void testFindInRainbowTableNoMatch() {
+        Map<String, String> rt = cut.generateRainbowTable(1, 0);
+
+        String shoulNotdBeFound = cut.searchRainbowtable(
+                rt, "c0ffeebabec0ffeebabec0ffeebabe", 0);
+
+        assertEquals("It should not find anything.",
+                "HASH_NOT_FOUND", shoulNotdBeFound);
+    }
+
+    @Test
     public void testFindInRainbowTableFirstMatches() {
         Map<String, String> rt = cut.generateRainbowTable(1, 0);
         assertEquals("It should be like this after 0 cycles.",
