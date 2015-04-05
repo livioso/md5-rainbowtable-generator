@@ -16,6 +16,7 @@ public class RainbowTable {
     // the password is a seven digit string formed by characters. ^
     final int passwordLength = 7;
 
+    // amount of rounds we do the (Hash -> Reduce) cycle
     final int rounds;
 
     public RainbowTable(int rounds) {
@@ -72,13 +73,13 @@ public class RainbowTable {
             BigInteger hash = generateMD5Hash(lastReducedHash);
 
             if(hash.equals(new BigInteger(lookedForHash, 16))) {
-                return lastReducedHash;
+                 break; // we found it! -> lastReducedHash
+            } else {
+                lastReducedHash = reduceFromMD5Hash(hash, cycle);
             }
-
-            lastReducedHash = reduceFromMD5Hash(hash, cycle);
         }
 
-        return "";
+        return lastReducedHash;
     }
 
     public String reduceFromMD5Hash(BigInteger hash, int round) {
