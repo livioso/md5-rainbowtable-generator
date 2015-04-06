@@ -6,28 +6,20 @@ import java.util.Map;
 
 public class RainbowTable implements IRainbowTable {
 
-    final private Character[] characters = {
-            '0', '1', '2', '3', '4',
-            '5', '6', '7', '8', '9',
-            'a', 'b', 'c', 'd', 'e',
-            'f', 'g', 'h', 'i', 'j',
-            'k', 'l', 'm', 'n', 'o',
-            'p', 'q', 'r', 's', 't',
-            'u', 'v', 'w', 'x', 'y',
-            'z' // Z set of characters
-    };
+    private final char[] characters =
+            "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
 
     // maps te last generate reduced hash to the beginning PW
-    Map<String, String> rainbowTable = new HashMap<>();
+    private Map<String, String> rainbowTable = new HashMap<>();
 
     // the password is a seven digit string formed by characters.^
-    final int passwordLength = 7;
+    private final int passwordLength = 7;
 
     // how many passwords should be generated
-    final int amountOfPasswords;
+    private final int amountOfPasswords;
 
     // amount of rounds we do the (Hash -> Reduce) cycle
-    final int rounds;
+    private final int rounds;
 
     public RainbowTable(int amountOfPasswords, int rounds) {
         this.amountOfPasswords = amountOfPasswords;
@@ -53,11 +45,9 @@ public class RainbowTable implements IRainbowTable {
 
         // very first look up -> just last reduce function applied
         if (rainbowTable.containsKey(reducedHash)) {
-            return reduceReverse(
-                    rainbowTable.get(reducedHash), forHash);
+            return reduceReverse(rainbowTable.get(reducedHash), forHash);
         }
 
-        // Example with 2 rounds:
         // Reduce(2) -> Compare
         // Reduce(1) -> Hash -> Reduce(2) -> Compare
         // Reduce(0) -> Hash -> Reduce(1) -> Hash -> Reduce(2) -> Compare
@@ -76,8 +66,7 @@ public class RainbowTable implements IRainbowTable {
             // see if we got a match -> if so reconstruct the
             // chain beginning from the start value (pair->value)
             if (rainbowTable.containsKey(reducedHash)) {
-                return reduceReverse(
-                        rainbowTable.get(reducedHash), forHash);
+                return reduceReverse(rainbowTable.get(reducedHash), forHash);
             }
         }
 
