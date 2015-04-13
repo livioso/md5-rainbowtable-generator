@@ -21,3 +21,10 @@ To run the unit tests do:
 ```
 gradle test
 ```
+
+If you are using IDEA Intellij do: 
+```
+gradle idea
+```
+*This will create the `.ipr`, `.iml` and `.iws` files.*
+
